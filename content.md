@@ -507,7 +507,7 @@ Now our application layout file should look much, much cleaner:
 
 Partials make our code more modular and easier to read.
 
-### Partials with Inputs 01:02:30 to
+### Partials with inputs
 
 Partials get even more powerful when you can send data into them to be automatically used in the output of the partial. 
 
@@ -541,9 +541,9 @@ Now it becomes more clear why it can be useful to render the same partial multip
 
 If we think of rendering partials as _calling methods that return HTML_, then the `:locals` option is how we pass in arguments to those methods. This allows us to create powerful, reusable HTML components.
 
-The arguments that we pass with the option `:locals` take the form of a hash with key/value pairs. The keys correspond to the name of the variables in the the partial, and the value is whatever we want the variable to be.
+The arguments that we pass with the option `:locals` take the form of a hash with key/value pairs. The keys correspond to the name of the variables in the partial, and the value is whatever we want the variable to be.
 
-We're finally at the point where we can move our form into a partial to reuse on the `new` and `edit` pages!
+We're finally at the point where we can move our form into a partial to reuse it on the `new` and `edit` pages!
 
 Make a new file in `app/views/movies/` called `_form.html.erb`, and cut-paste the content of our form there (changing all of the `@movie` instance variables to just local variables called `movie`):
 
@@ -575,9 +575,9 @@ Make a new file in `app/views/movies/` called `_form.html.erb`, and cut-paste th
   </div>
 <% end %>
 ```
-{: mark_lines="3 7"}
 
 <aside markdown="1">
+
 Note that we could have still used `@movie` in this partial, because instance variables that are defined in the actions will be available in the partial, and the instance variable is the same in both actions using this form. But if the name was different in the two actions (e.g., `@the_movie` vs. `@new_movie`), then we would want to use `:locals` as we do in the example.
 </aside>
 
@@ -609,26 +609,26 @@ Actually, we can shorten things a bit. If you are rendering a partial with some 
 
 That's optional though, and I prefer typing out the long way with `partials:` and `locals:` so you can tell exactly what's going on.
 
-### Adding Another Column 01:17:00 to 01:19:18
+### Adding another column
 
 Let's see the power of our new form partials by adding another column to the database and then to our forms.
 
 The first step is generating the migration and running it:
 
-```bash
+```
 rails g migration AddReleasedOnToMovies released_on:date
 ```
 
-```bash
-rails db:migrate
+```
+rake db:migrate
 ```
 
 Then we need to whitelist the new column in our strong parameters to allow mass assignment:
 
-```ruby
+```ruby{7:(67-80)}
 # app/controllers/movies_controller.rb
 
-...
+# ...
   private
 
   def movie_params
@@ -636,17 +636,13 @@ Then we need to whitelist the new column in our strong parameters to allow mass 
   end
 end
 ```
-{: mark_lines="7"}
 
 And finally, we can just pop that into the `movies/_form.html.erb` file (using the `.date_select` method to create a nice selection menu on the form):
 
-```erb
-...
-  <div>
-    <%= form.label :image_url %>
-    <%= form.text_field :image_url %>
-  </div>
+```erb{4-7}
+<!-- app/views/movies/_form.html.erb -->
 
+<!-- ... -->
   <div>
     <%= form.label :released_on %>
     <%= form.date_select :released_on %>
@@ -657,11 +653,10 @@ And finally, we can just pop that into the `movies/_form.html.erb` file (using t
   </div>
 <% end %>
 ```
-{: mark_lines="7-10"}
 
 And it will appear (and work) in both of our new and edit forms!
 
-## Bootstrap Cards for Show Page 01:25:00 to 01:32:00
+## Bootstrap cards for show page
 
 To explore the next topic, let's try and make the `movies#show` page look better. We don't want a list of information with the plain `<dl>` "description list" construction, we want [Bootstrap cards](https://getbootstrap.com/docs/5.3/components/card/)! (And maybe even some [free Font Awesome icons](https://fontawesome.com/search?o=r&m=free).)
 
