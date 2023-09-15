@@ -404,7 +404,7 @@ If we test this, it looks pretty good. But there's not a lot of space between fl
 
 Looks good? Great! Commit again.
 
-I want to note: there's an open [pull request for this project](https://github.com/appdev-projects/helper-methods-3/pull/1/files) on Github, that contains all of the changes we will be incrementally making in this lesson. That's a nice resource to occassionally glance at as we go throught the project to see a summary of changes on each file.
+I want to note: there's an open [pull request for this project](https://github.com/appdev-projects/helper-methods-part-3/pull/1/files) on Github, that contains all of the changes we will be incrementally making in this lesson. That's a nice resource to occassionally glance at as we go throught the project to see a summary of changes on each file.
 
 **BENP 00:27:00 to 00:33:30 is Q/A**
 
@@ -1356,9 +1356,9 @@ Most developers learn Rails with `scaffold` as a _starting_ point. However, thro
 
 ## User accounts with Devise 02:07:00 to 02:17:30
 
-**BENP: below is a rought transcript, but this should be zipped in with the older https://chapters.firstdraft.com/chapters/880 chapters reading**
+Most professional Rails apps, and from now all of ours, will use the `devise` generator to build out sign-in/sign-out RCAVs. (We'll leave the beginner-oriented `draft:account` behind.)
 
-[Read about the Devise gem.](https://chapters.firstdraft.com/chapters/880) Most professional Rails apps, and from now all of ours, will use the `devise` generator to build out sign-in/sign-out RCAVs. (We'll leave the beginner-oriented `draft:account` behind.)
+The next lesson _User Authentication with Devise_ has a few more details about the Devise gem, but this section is all you need to finish this project.
 
  1. Add `gem "devise"` to your `Gemfile` and `bundle install`.
 
