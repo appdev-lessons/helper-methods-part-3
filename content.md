@@ -169,11 +169,11 @@ Have you looked over the Git CLI reading? If you feel comfortable with it, follo
 
 (Or, as I do with shortcuts in the video:
 
-`% git acm "added bootstrap navbar"` 
+`% g acm "added bootstrap navbar"` 
 
 and then: 
 
-`% git p`.)
+`% g p`.)
 
 ## Bootstrap alerts
 
@@ -228,18 +228,18 @@ Do the messages appear and disappear as expected? Good! Time for another commit.
 
 ## Bootstrap containers for padding
 
-Okay, what else? Wouldn't it be nice if everything in the app wasn't pushed all the way to the edges? We would like some padding around the content. This is the perfect use case for [Bootstrap `container` class](https://getbootstrap.com/docs/5.3/layout/containers/). 
+Wouldn't it be nice if everything in the app wasn't pushed all the way to the edges? We would like some padding around the content. This is the perfect use case for the [Bootstrap `container` class](https://getbootstrap.com/docs/5.3/layout/containers/). 
 
-And since we want padding on every page, why not put it in the application layout again!
+Since we want padding on every page, why not put it in the application layout again!
 
-```erb
+```erb{10,24}
 <!-- app/views/layouts/application.html.erb -->
 
-...
+<!-- ... -->
   <body>
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      ...
+      <!-- ... -->
     </nav>
     
     <div class="container">
@@ -260,9 +260,9 @@ And since we want padding on every page, why not put it in the application layou
   </body>
 </html>
 ```
-{: mark_lines="10 "}
 
 <aside markdown="1">
+
 When I'm actually writing code, to speed things up, I use the "Emmet" abbreviation to generate tags for a given class in HTML. For instance, you can just type `div.container` in the code editor, and you should see an option come up to press <kbd>tab</kbd>, which will generate `<div class="container"></div>`.
 </aside>
 
@@ -272,34 +272,30 @@ If we test this, it looks pretty good. But there's not a lot of space between fl
 
 Looks good? Great! Commit again.
 
-I want to note: there's an open [pull request for this project](https://github.com/appdev-projects/helper-methods-part-3/pull/2/files) on Github, that contains all of the changes we will be incrementally making in this lesson. That's a nice resource to occasionally glance at as we go throught the project to see a summary of changes on each file.
+I want to note: there's an open [pull request for this project](https://github.com/appdev-projects/helper-methods-part-3/pull/2/files) on Github, that contains all of the changes we will be incrementally making in this lesson. That's a nice resource to occasionally glance at as we go through the project to see a summary of changes on each file.
 
-**BENP 00:27:00 to 00:33:30 is Q/A**
+## Reviewing form builder
 
-## Reviewing Form Builder 00:33:30 to 00:51:30 
-
-Sometimes we have code that we want to reuse, but not in every single template, but in _some_ templates. And it would be really nice to avoid duplication. Also, look how long our application layout has become with all of the Bootstrap additions we made. Wouldn't it be great if we could put some of that code in separate files to make it all more readable?
+Sometimes we have code that we want to reuse. Not in every single template, but in _some_ templates. And it would be nice to avoid duplication. Also, look how long our application layout has become with all of the Bootstrap additions we made. Wouldn't it be great if we could put some of that code in separate files to make it all more readable?
 
 We're headed towards partial view templates. Let's get our first feel for things with our `new.html.erb` and `edit.html.erb` forms. Open those files. What to do you notice? Where are the differences?
 
 It turns out, because we switched to `form_with` helpers, the two forms are identical besides the copy in the `<h1>` tag at the top of each page! ("New" vs. "Edit".)
 
-`form_with` does a lot for us. Let's review it before we go on to partial view templates. 
-
-It knows whether the object is persisted in the database or not, and how to fill in placeholder values for partially filled out forms or objects that already have column values. So everything is basically the same! 
+`form_with` does a lot for us. It knows whether the object is persisted in the database or not, and how to fill in placeholder values for partially filled out forms or objects that already have column values. So everything is basically the same! 
 
 Now, what if we add a new column? Let's see how we would change our code to allow that. How about an image URL for the movie?
 
-Start by running the terminal command:
+Start by running the bash prompt command:
 
-```bash
+```
 rails g migration AddImageUrlToMovies image_url:string
 ```
 
 Then migrate the change to the database:
 
-```bash
-rails db:migrate
+```
+rake db:migrate
 ```
 
 And you can check the `db/schema.rb` file to see that the table `movies` now has this additional column.
@@ -308,7 +304,7 @@ What if I want to add it to my form so people can actually use that column?
 
 We can do that with the `form_with` construction easily:
 
-```erb
+```erb{20-23}
 <!-- app/views/movies/new.html.erb -->
 
 <h1>New movie</h1>
@@ -338,43 +334,40 @@ We can do that with the `form_with` construction easily:
   </div>
 <% end %>
 ```
-{: mark_lines="20-23"}
 
 But what if I try that out in the `/movies/new` page? It won't actually work yet. Why?
 
 Because we also need to remember to whitelist this new column to allow for mass assignment to take place!
 
-```ruby
+```ruby{5:(70-81),12:(70-81)}
 # app/controllers/movies_controller.rb
 
-  ...
+  # ...
   def create
     movie_params = params.require(:movie).permit(:title, :description, :image_url)
-    
-    @movie = Movie.new(movie_params)
   
-  ...
+  # ...
   
   def update
     @movie = Movie.find(params.fetch(:id))
 
     movie_params = params.require(:movie).permit(:title, :description, :image_url)
-
-    if @movie.update(movie_params)
-    ...
+  
+  # ...
 ```
-{: mark_lines="5 14"}
 
-And we whitelisted in both the `create` and `update` action so we can save new recrods and edit them later.
+Back to the point. We have these two forms `edit` and `new` and we would like to reuse the code in them and not need to make changes in two places ever.
 
-Okay, that aside was just to remind us how `form_with model` works with mass assignment. But back to the point. We have these two forms `edit` and `new` and we would like to just reuse the code in them and not need to make changes in two places ever.
+First of all, we can DRY up where we are creating that variable `movie_params` twice in our controller. We can do that by defining a new method in the bottom of the controller:
 
-First of all, where we are creating that variable `movie_params` twice in our controller, we can dry that up. We can do that by defining a new method in the bottom of the controller:
+<aside markdown="1">
+DRY: Don't Repeat Yourself.
+</aside>
 
-```ruby
+```ruby{5,7-9}
 # app/controllers/movies_controller.rb
 
-...
+# ...
 
   private
 
@@ -383,22 +376,21 @@ First of all, where we are creating that variable `movie_params` twice in our co
   end
 end
 ```
-{: mark_lines="5 7-9"}
 
-We put a new keyword `private` and below this, we defined our helper method. We put any methods that are just helpers for the actions below `private` in the controller.
+We put a new keyword, `private`, and below this we defined our helper method. We put any methods that are just helpers for the actions below `private` in the controller.
 
-Then passing that _method_ to the `create` and `update` actions!
+Then passing that _method_ `movie_params` to the `create` and `update` actions allows us to simplify them:
 
-```ruby
+```ruby{5,14}
 # app/controllers/movies_controller.rb
 
-  ...
+  # ...
   def create
     # movie_params = params.require(:movie).permit(:title, :description, :image_url)
     
     @movie = Movie.new(movie_params)
   
-  ...
+  # ...
   
   def update
     @movie = Movie.find(params.fetch(:id))
@@ -406,25 +398,24 @@ Then passing that _method_ to the `create` and `update` actions!
     # movie_params = params.require(:movie).permit(:title, :description, :image_url)
 
     if @movie.update(movie_params)
-    ...
+    # ...
 ```
-{: mark_lines="5 14"}
 
 When these actions are triggered, Rails will reach that `movie_params` argument, which we didn't define in the action, and instead of throwing an error, it will search the controller for a method that matches that argument and call that method. We could write `self.movie_params`, as the longhand for what this step is doing!
 
 So now all of our whitelisted columns are in one place and we don't need to repeat our code when we make changes to the database.
 
-## Partial View Templates 00:51:30
+## Partial view templates
 
-Now that we can add to the forms, how can we get the forms in one place so we can reuse them for different purposes (`create` and `update`) on different pages? The answer is partial view templates.
+Now that we can add to the forms, how can we get the forms in one place so we can reuse them for different purposes (`create` and `update`) on different pages? The answer is **partial view templates**.
 
-Partial view templates (or just "partials", for short) are an extremely powerful tool to help us modularize and organize our view templates. Especially once we start adding in styling with Bootstrap, etc, our view files will grow to be hundreds or thousands of lines long, so it becomes increasingly helpful to break them up into partials.
+Partial view templates (or just "partials", for short) are an extremely powerful tool to help us modularize and organize our view templates. Especially once we start adding in styling with Bootstrap, our view files will grow to be hundreds or thousands of lines long, so it becomes increasingly helpful to break them up into partials.
 
 Here is the [official article in the Rails API reference](https://edgeapi.rubyonrails.org/classes/ActionView/PartialRenderer.html) describing all the ways you can use partials. There are lots of powerful options available, but for now we're going to focus on the most frequently used ones.
 
 Let's get our first feel for partials, then see about our `new.html.erb` and `edit.html.erb` forms. 
 
-### Static HTML Partials 00:52:00 to 01:00:00
+### Static HTML partials
 
 Create a partial view template in the same way that you create a regular view template, except that the first letter in the file name must be an underscore. This is how we (and Rails) distinguish partial view templates from full view templates.
 
