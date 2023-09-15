@@ -153,9 +153,9 @@ We could add more links to things like `/movies/new`, but we'll just keep it sim
 
 Lastly, we can delete the entire `<li class="nav-item dropdown">` nested element that defines the dropdown menu, since we only have the single resource in this app.
 
-## Git command line interface
+## Git command-line interface
 
-Now's a good time for another git commit. However, rather than your familiar VSCode built in workflow, it's time to see how most developers interact with git in the real world: via the command line.
+Now is a good time for another git commit. However, rather than your familiar VSCode built in workflow, it's time to see how most developers interact with git in the real world: via the command line.
 
 Pause for a moment and spend just 5 to 10 minutes [glancing over the next lesson on the Git Command-Line Interface (CLI)](https://learn.firstdraft.com/lessons/196-git-cli). **Do not spend time worrying about everything, most importantly, just get a sense of how you can commit and push from the command line.** You will get much more practice with git at the command line soon; including branching and merging.
 
@@ -169,50 +169,26 @@ Have you looked over the Git CLI reading? If you feel comfortable with it, follo
 
 (Or, as I do with shortcuts in the video:
 
-`% g acm "added bootstrap navbar"` 
+`% git acm "added bootstrap navbar"` 
 
 and then: 
 
-`% g p`.)
+`% git p`.)
 
-## Bootstrap Alerts 00:19:30 to 00:23:30
+## Bootstrap alerts
 
-Let's add some more bootstrap. Right now, when we add a movie at `/movies/new` there is a green sentence that comes up, which is the `:notice` message we set in our `create` action in the controller being rendered in the application layout:
-
-```erb
-<!-- app/views/layouts/application.html.erb -->
-
-...
-  <body>
-
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      ...
-    </nav>
-    
-    <div style="color: green;">
-      <%= notice %>
-    </div>
-
-    <div style="color: red;">
-      <%= alert %>
-    </div>
-    
-    <%= yield %>
-  </body>
-</html>
-```
-{: mark_lines="10-12 14-16"}
+Let's add some more bootstrap. Right now, when we add a movie at `/movies/new` there is a green sentence that comes up, which is the `:notice` message we set in our `create` action in the controller being rendered in the application layout.
 
 We can improve that simple green text with [Bootstrap alerts](https://getbootstrap.com/docs/5.3/components/alerts/). Again, we can just copy and paste the examples we want (perhaps the green "success" and red "danger" boxes):
 
-```erb
+```erb{10-12,14-16}
 <!-- app/views/layouts/application.html.erb -->
 
-...
+<!-- ... -->
   <body>
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      ...
+      <!-- ... -->
     </nav>
     
     <div class="alert alert-success" role="alert">
@@ -227,22 +203,13 @@ We can improve that simple green text with [Bootstrap alerts](https://getbootstr
   </body>
 </html>
 ```
-{: mark_lines="10 14"}
 
 And now try to refresh the `/movies` page. 
 
 We have an issue. If there is no notice or alert, a red and a green box still appear. So what should we do? How about some `if` control flow? There's a nice method for this, which will check if the message is undefined or `nil` and return true or false: `.present?`
 
 ```erb
-<!-- app/views/layouts/application.html.erb -->
-
-...
-  <body>
-
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      ...
-    </nav>
-    
+<!-- ... -->
     <% if notice.present? %>
       <div class="alert alert-success" role="alert">
         <%= notice %>
@@ -254,16 +221,12 @@ We have an issue. If there is no notice or alert, a red and a green box still ap
         <%= alert %>
       </div>
     <% end %>
-
-    <%= yield %>
-  </body>
-</html>
+<!-- ... -->
 ```
-{: mark_lines="10 14 16 20"}
 
-Test out adding movies and also filling out forms correctly and incorrectly. Do the messages appear and disappear as expected? Good! Time for another commit.
+Do the messages appear and disappear as expected? Good! Time for another commit.
 
-## Bootstrap Containers for Padding 00:23:30 to 00:27:00
+## Bootstrap containers for padding
 
 Okay, what else? Wouldn't it be nice if everything in the app wasn't pushed all the way to the edges? We would like some padding around the content. This is the perfect use case for [Bootstrap `container` class](https://getbootstrap.com/docs/5.3/layout/containers/). 
 
