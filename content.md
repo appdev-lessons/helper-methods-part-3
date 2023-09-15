@@ -232,7 +232,7 @@ Wouldn't it be nice if everything in the app wasn't pushed all the way to the ed
 
 Since we want padding on every page, why not put it in the application layout again!
 
-```erb{10,24}
+```erb{10-24}
 <!-- app/views/layouts/application.html.erb -->
 
 <!-- ... -->
