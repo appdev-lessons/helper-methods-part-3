@@ -711,9 +711,7 @@ Let's cut to the chase with the code we want on the `app/view/movies/show.html.e
 </div>
 ```
 
-Refresh the `/movies/1` (or whatever movie ID you want, just click a "Show details" link from the index). 
-
-You should see a bootstrap card with a card header, card footer, and a card body. In the card body, we have our description list with the attributes, and then I have buttons with Font Awesome icons for editing and deleting.
+Refresh the `/movies/1`, or whatever movie ID you want, just click a "Show details" link from the index. You should see a bootstrap card with a card header, card footer, and a card body.
 
 Read the code we copy-pasted and make some sense of things.
 
@@ -745,7 +743,7 @@ and:
           <% end %>
 ```
 
-(That's a `link_to` being used with the edit and delete methods in a block that draws an icon `fa-pen-to-square` (edit) and `fa-trash-can` (delete). Also note the `data: { turbo_method: :delete }` argument for the delete link.)
+(That's a `link_to` being used with the edit and delete methods in a `do`-`end` block that draws an icon `fa-pen-to-square` (edit) and `fa-trash-can` (delete). Also note the `data: { turbo_method: :delete }` argument for the delete link.)
 
 What are the three `"row"`, `"col"`, and `"d-grid"` classes doing? It turns out, these are what we need to achieve two side-by-side buttons that take up the full width of their Bootstrap row! The syntax might look familiar to creating an HTML table with rows and columns.
 
@@ -753,13 +751,13 @@ Let's edit the code to center the card in the middle of the screen, rather than 
 
 To do this, we can wrap our entire card in a Bootstrap row and column, right? Because we already have the `"container"` from the application layout that is wrapping every page in our app, and now we can put rows and columns inside of _that_. 
 
-```erb
+```erb{3-4,8-9}
 <!-- app/view/movies/show.html.erb -->
 
 <div class="row">
   <div class="col-md-4">
       <div class="card">
-        ...
+        <!-- ... -->
       </div>
   </div>
 </div>
@@ -772,7 +770,7 @@ If you check the movie details page, you will see the card has shrunk to a third
 
 We need to center the card by adding another option to the `"col"` class:
 
-```erb
+```erb{4:(24-34)}
 <!-- app/view/movies/show.html.erb -->
 
 <div class="row">
@@ -787,30 +785,13 @@ We need to center the card by adding another option to the `"col"` class:
 
 This `offset-md-4` will add another 4-width "invisible" column on the left side, shifting the card to the center. Have a look at the show details page. Much better!
 
-We could even make the card a bit wider by changing the width of the columns:
-
-```erb
-<!-- app/view/movies/show.html.erb -->
-
-<div class="row">
-  <div class="col-md-6 offset-md-3">
-      <div class="card">
-        ...
-      </div>
-  </div>
-</div>
-```
-{: mark_lines="4"}
-
-Very nice!
-
-## Bootstrap Cards for Index Page 01:32:00 to 01:37:00
+## Bootstrap cards for index page
 
 Now that we have cards on the details page for a movie, let's put cards on the index page as well. In another place (view template) we want the bit of HTML with embedded Ruby that we just wrote. How can we solve this? 
 
 Partials!
 
-Let's make a file `app/views/movies/_movie_card.html.erb`, and fill it with the card code, and, because we want the option of passing `:locals` to the partial, we replace and `@movie` model instance variables with just `movie`:
+Let's make a file `app/views/movies/_movie_card.html.erb`, and fill it with the cut-paste card code, and, because we want the option of passing `:locals` to the partial, we replace and `@movie` model instance variables with just `movie`:
 
 ```erb
 <!-- app/views/movies/_movie_card.html.erb -->
@@ -873,9 +854,7 @@ Right away, we can remove all the card HTML from the `show` page and replace it 
 </div>
 ```
 
-And we have our partial, so we can plug that into the 
-
-We can take the code in the `index` and get rid of our entire table setup, rather rendering every card in the `.each` loop onto its own card! Again, reducing the amount of code in the view template by a huge amount:
+We can also take the code in the `index` and get rid of our entire table setup, and instead render every card in the `.each` loop onto its own card! Again, reducing the amount of code in the view template by a huge amount:
 
 ```erb
 <!-- app/views/movies/index.html.erb -->
@@ -900,12 +879,10 @@ We can take the code in the `index` and get rid of our entire table setup, rathe
 
 Note that in the `.each` loop our block variable was called `movie`, and the local variable in the partial also happens to be called `movie`. Hence the `movie: movie` in the `:locals`. That might seem confusing, but these are two different objects. The first `movie:` is a symbol, representing the name of the variable in the partial, and the second `movie` is the block variable coming from the `@movies.each` iteration.
 
-If you refresh the `index` page with that code, you will see all the cards, but the spacing is not great. That's because we're just rendering the partial over and over in the loop, without putting any spacing around them. We can quickly add some spacing within our loop like so:
+If you refresh the `index` page with that code, you will see all of the cards, but the spacing is not great. That's because we're just rendering the partial over and over in the loop, without putting any spacing around them. We can quickly add some spacing within our loop like so:
 
 ```erb
-...
-<hr>
-
+<!-- ... -->
 <div class="row">
   <% @movies.each do |movie| %>
     <div class="col-md-3">
@@ -919,7 +896,7 @@ We put the entire `.each` loop in a `"row"` of the container (again, the `"conta
 
 How does the page look now? Pretty good, right? Time to commit!
 
-## Partials shine along with Jump To File 01:37:00 to 01:40:00
+## Partials shine along with Jump To File
 
 With all of these partials, we're really starting to have a lot of files to jump around between! And this is only for one `movies` resource. Imagine if we had four or five or more.
 
