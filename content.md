@@ -1,14 +1,32 @@
 # Helper Methods Part 3
 
-## Getting Started 00:00:00 to 00:09:00
+## Getting Started
 
-Please start the Gitpod workspace for [Helper Methods (Part 3)](https://github.com/appdev-projects/helper-methods-3). As usual, run `bin/setup` and get the server started as well. 
+There is no target for this app, but the project does include a few basic automated tests, so click on this button to get started:
 
-Have a look through the code. It is a solution Parts 1 and 2 of the Helper Methods project, with all of our professional refactoring. Refresh anything that looks unfamiliar by glancing back to your notes.
+LTI{Load Helper Methods Part 3 assignment}(https://grades.firstdraft.com/launch)[S9ymPy6WCsn18gLbByVbZQ7k]{vfdtzJb5bLYqYwuqgeRKpc5d}(10)[Helper Methods Part 3 Project]
 
-As long as your looking through notes, now might also be a great time to have a look at Ruby Weekly from this week. Did you see anything interesting? Could you begin to make some sense of some of the news with all your AD1 and beginning AD2 knowledge? Hopefully yes!
+The staring point code for `helper-methods-part-3` is where you should have arrived by the end of the previous `helper-methods-part-1-and-2` project. The current project `helper-methods-part-3` covers everything in this lesson.
 
-Now let's keep going with our helper methods and learn about four more Rails shortcuts.
+Let's keep going with our helper methods and learn about some more Rails shortcuts, add some bootstrap to make our app _look_ professional, and then add user accounts with Devise.
+
+## Walkthrough video
+
+For the rest of this lesson, there is a walkthrough video available.
+
+<div class="bg-red-100 py-1 px-5" markdown="1">
+**Please note**, the video is from a previous iteration of the project, so there are some differences:
+
+- The project was previously called `helper-methods`, but it has been renamed to `helper-methods-part-1-and-2`
+- I am using Gitpod as my cloud editor, so the interface looks a bit different.
+- Anything contained in the project "README" is now contained in this Lesson
+- I use a graphical user interface at the URL path `/git` to commit and push, _you_ should use [the VSCode built in workflow in this lesson](https://learn.firstdraft.com/lessons/50-git-commit-and-push)
+- I use `bin/server` to start my live app preview, _you_ should use `bin/dev`
+</div>
+
+Did you read the differences above? Good! Then [here is a walkthrough video for this project.](https://share.descript.com/view/mQOqBmvJmSo)
+
+**As you watch the video, pause it frequently, read the associated text, and type out the code.**
 
 ## Bootstrap CSS Navbar 00:09:00 to 00:15:30
 
@@ -1353,7 +1371,7 @@ Most developers learn Rails with `scaffold` as a _starting_ point. However, thro
  1. Now create a `users` resource with: 
  
     ```bash
-    rails g devise user first_name:string last_name:string`
+    rails g devise user first_name:string last_name:string
     ```
 
   This is just like our previous resource generator, where we have the table name `user` and the name:datatype of the columns.
@@ -1381,22 +1399,23 @@ Try to signup for an account. You can just use `alice@example.com` and `password
 
 Let's add some links to our navbar in the `_navbar.html.erb` partial to reach the sign up, sign in, sign out pages. E.g.:
 
-    ```
-    ...
-        <li class="nav-item">
-          <%= link_to "Movies", movies_path, class: "nav-link" %>
-        </li>
-        <li class="nav-item">
-          <%= link_to "Sign up", new_user_registration_path, class: "nav-link" %>
-        </li>
-        <li class="nav-item">
-          <%= link_to "Log in", new_user_session_path, class: "nav-link" %>
-        </li>
-        <li class="nav-item">
-          <%= link_to "Sign out", destroy_user_session_path, class: "nav-link", method: :delete %>
-        </li>
-    ...
-    ```
+```erb
+<!-- ... -->
+    <li class="nav-item">
+      <%= link_to "Movies", movies_path, class: "nav-link" %>
+    </li>
+    <li class="nav-item">
+      <%= link_to "Sign up", new_user_registration_path, class: "nav-link" %>
+    </li>
+    <li class="nav-item">
+      <%= link_to "Log in", new_user_session_path, class: "nav-link" %>
+    </li>
+    <li class="nav-item">
+      <%= link_to "Sign out", destroy_user_session_path, class: "nav-link", method: :delete %>
+    </li>
+<!-- ... -->
+```
+
 (Note we needed a `method: :delete` for the sign out action, because this is a DELETE request in the route that Devise defines.)
 
 Now: 
@@ -1411,4 +1430,6 @@ Now:
 
 ## Solutions
 
-You can see my solutions for this project in [this pull request](https://github.com/appdev-projects/helper-methods-3/pull/1/files).
+You can see my solutions for this project in [this pull request](https://github.com/appdev-projects/helper-methods-part-3/pull/1/files).
+
+---
