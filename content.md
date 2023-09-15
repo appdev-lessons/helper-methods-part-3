@@ -17,7 +17,6 @@ For the rest of this lesson, there is a walkthrough video available.
 <div class="bg-red-100 py-1 px-5" markdown="1">
 **Please note**, the video is from a previous iteration of the project, so there are some differences:
 
-- The project was previously called `helper-methods`, but it has been renamed to `helper-methods-part-1-and-2`
 - I am using Gitpod as my cloud editor, so the interface looks a bit different.
 - Anything contained in the project "README" is now contained in this Lesson
 - I use a graphical user interface at the URL path `/git` to commit and push, _you_ should use [the VSCode built in workflow in this lesson](https://learn.firstdraft.com/lessons/50-git-commit-and-push)
