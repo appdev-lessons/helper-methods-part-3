@@ -85,10 +85,10 @@ Take those HTML elements and copy-paste into `app/views/layouts/application.html
 Note that we put the UTF-8 character set at the _top_ of the `<head>` because we want those characters available throughout our application, including in the `<title>` of the page.
 
 <aside markdown="1">
-When copy-pasting code into HTML documents, you can auto-format the indentation so that the elements are properly nested using <kbd>Cmd</kbd>(Mac) or <kbd>Cntrl</kbd>(PC) + <kbd>shift</kbd> + <kbd>P</kbd> to open the command pallet on Gitpod's VS Code editor. With the `>` command pallet prompt open, you can search "Format" and find the command. (You can search for any command in this prompt.) You will also see a direct keyboard shortcut to that formatting command that might be useful to you. Become a keyboard ninja!
+When copy-pasting code into HTML documents, you can auto-format the indentation so that the elements are properly nested using <kbd>Cmd</kbd> (Mac) or <kbd>Cntrl</kbd> (Windows) + <kbd>shift</kbd> + <kbd>p</kbd> to open the command pallet in VSCode. With the `>` command pallet prompt open, you can search "Format" and find the command. (You can search for any command in this prompt.) You will also see a direct keyboard shortcut to that formatting command that might be useful to you. Become a keyboard ninja!
 </aside> 
 
-Now refresh a page in your app (**/**, the root should be set to the movies `index` page) and see the change. If the fonts look a little better, you know you you connected the assets correctly.
+Now refresh a page in your app (`/`, the root should be set to the movies `index` page) and see the change. If the fonts look a little better, you know you you connected the assets correctly.
 
 Let's start putting it to use. Visit the [Bootstrap docs](https://getbootstrap.com/docs/5.1/getting-started/introduction/) (we are using v5.1), specifically the docs for implementing a [navbar](https://getbootstrap.com/docs/5.1/components/navbar/).
 
@@ -163,7 +163,7 @@ This is a good example of something that would go in the application layout file
 
 After this copy-paste, check on your live app that the navbar showed up.
 
-Now would be a good time for **/git** commit.
+Now would be a good time for git commit.
 
 Let's start modifying the navbar to suit our purposes, starting with the homepage link:
 
@@ -182,7 +182,7 @@ Let's start modifying the navbar to suit our purposes, starting with the homepag
 ```
 {: mark_lines="5-6"}
 
-Okay, we have a link to our **/** root page now. But actually, we should use our new helper methods! Remember, we have `link_to` now, which will draw `<a>` elements for us:
+Okay, we have a link to our `/` root page now. But actually, we should use our new helper methods! Remember, we have `link_to` now, which will draw `<a>` elements for us:
 
 ```erb
 ...
@@ -237,7 +237,7 @@ We have a list beginning with `<ul>`, then each `<li>` with a `class="nav-item"`
 ```
 {: mark_lines="6-7"}
 
-We could add more links to things like **/movies/new**, but we'll just keep it simple for now. 
+We could add more links to things like `/movies/new`, but we'll just keep it simple for now. 
 
 Lastly, let's delete the the `<li>` defining the dropdown menu, so that our final navbar code in the `<body>` of `app/views/layouts/application.html.erb` looks like:
 
@@ -265,13 +265,13 @@ Lastly, let's delete the the `<li>` defining the dropdown menu, so that our fina
 ...
 ```
 
-Now's a good time for another **/git** commit. 
+Now's a good time for another git commit. 
 
 **BENP: CLI `git` 00:15:30 to 00:19:30 using chapters. Maybe better to wait to show in a separate subsequent lesson**
 
 ## Bootstrap Alerts 00:19:30 to 00:23:30
 
-Let's add some more bootstrap. Right now, when we add a movie at **/movies/new** there is a green sentence that comes up, which is the `:notice` message we set in our `create` action in the controller being rendered in the application layout:
+Let's add some more bootstrap. Right now, when we add a movie at `/movies/new` there is a green sentence that comes up, which is the `:notice` message we set in our `create` action in the controller being rendered in the application layout:
 
 ```erb
 <!-- app/views/layouts/application.html.erb -->
@@ -323,7 +323,7 @@ We can improve that simple green text with [Bootstrap alerts](https://getbootstr
 ```
 {: mark_lines="10 14"}
 
-And now try to refresh the **/movies** page. 
+And now try to refresh the `/movies` page. 
 
 We have an issue. If there is no notice or alert, a red and a green box still appear. So what should we do? How about some `if` control flow? There's a nice method for this, which will check if the message is undefined or `nil` and return true or false: `.present?`
 
@@ -403,7 +403,7 @@ If we test this, it looks pretty good. But there's not a lot of space between fl
 
 Looks good? Great! Commit again.
 
-I want to note: there's an open [pull request for this project](https://github.com/appdev-projects/helper-methods-part-3/pull/1/files) on Github, that contains all of the changes we will be incrementally making in this lesson. That's a nice resource to occassionally glance at as we go throught the project to see a summary of changes on each file.
+I want to note: there's an open [pull request for this project](https://github.com/appdev-projects/helper-methods-part-3/pull/2/files) on Github, that contains all of the changes we will be incrementally making in this lesson. That's a nice resource to occasionally glance at as we go throught the project to see a summary of changes on each file.
 
 **BENP 00:27:00 to 00:33:30 is Q/A**
 
@@ -448,7 +448,7 @@ We can do that with the `form_with` construction easily:
   <p style="color: red;"><%= message %></p>
 <% end %>
 
-<%= form_with model: @movie do |form| %>
+<%= form_with(model: @movie, data: { turbo: :false }) do |form| %>
   <div>
     <%= form.label :title %>
     <%= form.text_field :title %>
@@ -471,7 +471,7 @@ We can do that with the `form_with` construction easily:
 ```
 {: mark_lines="20-23"}
 
-But what if I try that out in the **/movies/new** page? It won't actually work yet. Why?
+But what if I try that out in the `/movies/new` page? It won't actually work yet. Why?
 
 Because we also need to remember to whitelist this new column to allow for mass assignment to take place!
 
@@ -738,13 +738,13 @@ We're finally at the point where we can move our form into a partial to reuse on
 Make a new file in `app/views/movies/` called `_form.html.erb`, and cut-paste the content of our form there (changing all of the `@movie` instance variables to just local variables called `movie`):
 
 ```erb
-<!-- app/views/movies/new.html.erb -->
+<!-- app/views/movies/_form.html.erb -->
 
 <% movie.errors.full_messages.each do |message| %>
   <p style="color: red;"><%= message %></p>
 <% end %>
 
-<%= form_with model: movie do |form| %>
+<%= form_with(model: movie, data: { turbo: :false }) do |form| %>
   <div>
     <%= form.label :title %>
     <%= form.text_field :title %>
@@ -892,7 +892,7 @@ Let's cut to the chase with the code we want on the `app/view/movies/show.html.e
       </div>
       <div class="col">
         <div class="d-grid">
-          <%= link_to @movie, method: :delete, class: "btn btn-outline-secondary" do %>
+          <%= link_to @movie, data: { turbo_method: :delete }, class: "btn btn-outline-secondary" do %>
             <i class="fa-regular fa-trash-can"></i>
           <% end %>
         </div>
@@ -906,7 +906,7 @@ Let's cut to the chase with the code we want on the `app/view/movies/show.html.e
 </div>
 ```
 
-Refresh the **/movies/1*** (or whatever movie ID you want, just click a "Show details" link from the index). 
+Refresh the `/movies/1` (or whatever movie ID you want, just click a "Show details" link from the index). 
 
 You should see a bootstrap card with a card header, card footer, and a card body. In the card body, we have our description list with the attributes, and then I have buttons with Font Awesome icons for editing and deleting.
 
@@ -935,12 +935,12 @@ That wrap the Font Awesome icons, which are being drawn with:
 and:
 
 ```erb
-          <%= link_to @movie, method: :delete, class: "btn btn-outline-secondary" do %>
+          <%= link_to @movie, data: { turbo_method: :delete }, class: "btn btn-outline-secondary" do %>
             <i class="fa-regular fa-trash-can"></i>
           <% end %>
 ```
 
-(That's a `link_to` being used with the edit and delete methods in a block that draws an icon `fa-pen-to-square` (edit) and `fa-trash-can` (delete).)
+(That's a `link_to` being used with the edit and delete methods in a block that draws an icon `fa-pen-to-square` (edit) and `fa-trash-can` (delete). Also note the `data: { turbo_method: :delete }` argument for the delete link.)
 
 What are the three `"row"`, `"col"`, and `"d-grid"` classes doing? It turns out, these are what we need to achieve two side-by-side buttons that take up the full width of their Bootstrap row! The syntax might look familiar to creating an HTML table with rows and columns.
 
@@ -1042,7 +1042,7 @@ Let's make a file `app/views/movies/_movie_card.html.erb`, and fill it with the 
       </div>
       <div class="col">
         <div class="d-grid">
-          <%= link_to movie, method: :delete, class: "btn btn-outline-secondary" do %>
+          <%= link_to movie, data: { turbo_method: :delete }, class: "btn btn-outline-secondary" do %>
             <i class="fa-regular fa-trash-can"></i>
           <% end %>
         </div>
@@ -1248,7 +1248,7 @@ And we wanted to have that method run in a few different actions (say `new` and 
 Did we need the `self.` before `foo`? No! Rails will look for a `self.` defined method before crashing if we left it off.
 </aside>
 
-Now, we could create a new movie from our index page in our live app, and visit the server log in our Gitpod terminal where `bin/server` is running (`p` statements in the controller will be rendered in the server log). We should see the printed statement run for both the `new` and `index` action.
+Now, we could create a new movie from our index page in our live app, and visit the server log in our terminal where `bin/dev` is running (`p` statements in the controller will be rendered in the server log). We should see the printed statement run for both the `new` and `index` action.
 
 There's actually a method inherited into the `MoviesController` that we can use to run this `foo` action before specific actions in our controller:
 
@@ -1390,11 +1390,11 @@ The next lesson _User Authentication with Devise_ has a few more details about t
     - (GET) `edit_user_registration_path`: displays an edit profile form
     - even more for cancelling accounts, forgotten passwords, etc.
  
-To see the new code in action, restart the server with <kdb>ctrl</kbd>+<kdb>c</kbd> in the `bin/server` terminal and restart the server. 
+To see the new code in action, restart the server with <kdb>ctrl</kbd>+<kdb>c</kbd> in the `bin/dev` terminal and restart the server. 
 
-Now visit **/users/sign_in**. The whole login RCAV is up and running without us doing anything! 
+Now visit `/users/sign_in`. The whole login RCAV is up and running without us doing anything! 
 
-Try to signup for an account. You can just use `alice@example.com` and `password`, no need to use your actual email. When you signup, you should be redirected to the root homepage **/**.
+Try to signup for an account. You can just use `alice@example.com` and `password`, no need to use your actual email. When you signup, you should be redirected to the root homepage `/`.
 
 Let's add some links to our navbar in the `_navbar.html.erb` partial to reach the sign up, sign in, sign out pages. E.g.:
 
@@ -1410,12 +1410,12 @@ Let's add some links to our navbar in the `_navbar.html.erb` partial to reach th
       <%= link_to "Log in", new_user_session_path, class: "nav-link" %>
     </li>
     <li class="nav-item">
-      <%= link_to "Sign out", destroy_user_session_path, class: "nav-link", method: :delete %>
+      <%= link_to "Sign out", destroy_user_session_path, class: "nav-link", data: { turbo_method: :delete } %>
     </li>
 <!-- ... -->
 ```
 
-(Note we needed a `method: :delete` for the sign out action, because this is a DELETE request in the route that Devise defines.)
+(Note we needed a `data: { turbo_method: :delete }` for the sign out action, because this is a DELETE request in the route that Devise defines.)
 
 Now: 
 
@@ -1423,12 +1423,12 @@ Now:
  
  1. For the edit profile link, make the content of the `<a>` tag the user's first name + last name. You can access the signed in user with the `current_user` helper method, which is defined by Devise and available in all actions and all view templates.
  
- 1. Sign out. (If your sign-out link didn't work, you probably forgot to add `method: :delete` to it.)
+ 1. Sign out. (If your sign-out link didn't work, you probably forgot to add `data: { turbo_method: :delete }` to it.)
  
  1. Force someone to be signed in by adding the `before_action :authenticate_user!` method to the `ApplicationController`. The `:authenticate_user!` method is defined by Devise.
 
 ## Solutions
 
-You can see my solutions for this project in [this pull request](https://github.com/appdev-projects/helper-methods-part-3/pull/1/files).
+You can see my solutions for this project in [this pull request](https://github.com/appdev-projects/helper-methods-part-3/pull/2/files).
 
 ---
