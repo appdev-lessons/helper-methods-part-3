@@ -8,7 +8,7 @@ LTI{Load Helper Methods Part 3 assignment}(https://grades.firstdraft.com/launch)
 
 The staring point code for `helper-methods-part-3` is where you should have arrived by the end of the previous `helper-methods-part-1-and-2` project. The current project `helper-methods-part-3` covers everything in this lesson.
 
-Let's keep going with our helper methods and learn about some more Rails shortcuts, add some bootstrap to make our app _look_ professional, and then add user accounts with Devise.
+Let's keep going with our helper methods and add some bootstrap to make our app _look_ professional, learn about rendering partials, and then add user accounts with Devise.
 
 ## Walkthrough video
 
@@ -18,8 +18,7 @@ For the rest of this lesson, there is a walkthrough video available.
 **Please note**, the video is from a previous iteration of the project, so there are some differences:
 
 - I am using Gitpod as my cloud editor, so the interface looks a bit different.
-- Anything contained in the project "README" is now contained in this Lesson
-- I use a graphical user interface at the URL path `/git` to commit and push, _you_ should use [the VSCode built in workflow in this lesson](https://learn.firstdraft.com/lessons/50-git-commit-and-push)
+- Anything contained in the project "README" or in the "chapters" is now contained in this Lesson
 - I use `bin/server` to start my live app preview, _you_ should use `bin/dev`
 </div>
 
@@ -27,11 +26,9 @@ Did you read the differences above? Good! Then [here is a walkthrough video for 
 
 **As you watch the video, pause it frequently, read the associated text, and type out the code.**
 
-## Bootstrap CSS Navbar 00:09:00 to 00:15:30
+## Bootstrap CSS navbar
 
-I want to start getting in the habit of making our apps look better. That means pulling in Bootstrap CSS and Font Awesome. 
-
-Rather than us downloading and then uploading the files into our workspace, the quickest way of getting those is using some design resources from AD1:
+I want to start getting in the habit of making our apps look better. That means pulling in Bootstrap CSS and Font Awesome, using the [quick link to them here](https://learn.firstdraft.com/lessons/143-design-resources#quick-links-to-assets):
 
 ```erb
 <!-- Expand the number of characters we can use in the document beyond basic ASCII 🎉 -->
@@ -41,173 +38,94 @@ Rather than us downloading and then uploading the files into our workspace, the 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <!-- Connect Bootstrap CSS -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css">
 
 <!-- Connect Bootstrap JavaScript and its dependencies -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js"></script>
 
 <!-- Connect Font Awesome -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/js/all.min.js"></script>
 ```
 
-Specifically, we want the CDN links in your HTML application layout view template. And if it's not already there, we also want the UTF-8 character set and the responsive viewport for different screen sizes.
-
-Take those HTML elements and copy-paste into `app/views/layouts/application.html.erb`, our wrapper file for all of the pages we are `yield`ing into the `<body>` of:
-
-```erb
-<!-- app/views/layouts/application.html.erb -->
-
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>VanillaRails</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <%= csrf_meta_tags %>
-    <%= csp_meta_tag %>
-
-    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-    <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
-
-    <!-- Connect Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-
-    <!-- Connect Bootstrap JavaScript and its dependencies -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
-
-    <!-- Connect Font Awesome -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/js/all.min.js"></script>
-  </head>
-  ...
-```
-{: mark_lines="6 8 15-16 18-19 21-22"}
-
-Note that we put the UTF-8 character set at the _top_ of the `<head>` because we want those characters available throughout our application, including in the `<title>` of the page.
+Take those HTML elements and copy-paste into the `<head>` of your `app/views/layouts/application.html.erb`.
 
 <aside markdown="1">
-When copy-pasting code into HTML documents, you can auto-format the indentation so that the elements are properly nested using <kbd>Cmd</kbd> (Mac) or <kbd>Cntrl</kbd> (Windows) + <kbd>shift</kbd> + <kbd>p</kbd> to open the command pallet in VSCode. With the `>` command pallet prompt open, you can search "Format" and find the command. (You can search for any command in this prompt.) You will also see a direct keyboard shortcut to that formatting command that might be useful to you. Become a keyboard ninja!
+
+When copy-pasting code into HTML documents, you can auto-format the indentation so that the elements are properly nested using <kbd>Cmd</kbd> + <kbd>shift</kbd> + <kbd>p</kbd> (Mac) or <kbd>Cntrl</kbd> + <kbd>shift</kbd> + <kbd>p</kbd> (Windows) to open the **command pallet** in VSCode. 
+
+With the `>` command pallet prompt open, you can search "Format" and find the command. (You can search for any command in this prompt.) You will also see a direct keyboard shortcut to that formatting command that might be useful to you. Become a keyboard ninja!
 </aside> 
 
 Now refresh a page in your app (`/`, the root should be set to the movies `index` page) and see the change. If the fonts look a little better, you know you you connected the assets correctly.
 
-Let's start putting it to use. Visit the [Bootstrap docs](https://getbootstrap.com/docs/5.1/getting-started/introduction/) (we are using v5.1), specifically the docs for implementing a [navbar](https://getbootstrap.com/docs/5.1/components/navbar/).
+Let's start putting it to use. Visit the [Bootstrap docs](https://getbootstrap.com/docs/5.3/getting-started/introduction/), specifically the docs for implementing a [navbar](https://getbootstrap.com/docs/5.3/components/navbar/).
 
-Near the top of the page you can copy the "kitchen sink" example, with everything in it, and click the "Copy" button:
+<div class="bg-red-100 py-1 px-5" markdown="1">
 
-![](/assets/navbar-bootstrap-gif.gif)
+In the video, I am using the Bootstrap documentation for version 5.1, but the links contained in this lesson are for version 5.3. Use the newer version.
+</div>
 
-There's a lot here, but we just want to take it all and then remove what we don't need:
+Near the top of the page you can find the example with everything in it, and use the top right "Copy" button to grab it all. There's a lot here, but we just want to take it all and then remove what we don't need:
 
 ```erb
 <!-- app/views/layouts/application.html.erb -->
 
-...
-    <!-- Connect Font Awesome -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/js/all.min.js"></script>
-  </head>
-
+<!-- ... -->
   <body>
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
       <div class="container-fluid">
         <a class="navbar-brand" href="#">Navbar</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="#">Home</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Link</a>
-            </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Dropdown
-              </a>
-              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" href="#">Action</a></li>
-                <li><a class="dropdown-item" href="#">Another action</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="#">Something else here</a></li>
-              </ul>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link disabled">Disabled</a>
-            </li>
-          </ul>
-          <form class="d-flex">
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success" type="submit">Search</button>
-          </form>
-        </div>
-      </div>
+        
+        <!-- ... etc., etc. -->
+
     </nav>
-    
-    <div style="color: green;">
-      <%= notice %>
-    </div>
-
-    <div style="color: red;">
-      <%= alert %>
-    </div>
-    
-    <%= yield %>
-  </body>
-</html>
+<!-- ... -->
 ```
-{: mark_lines="10"}
 
-This is a good example of something that would go in the application layout file in the `<body>` above our `<%= yield %>` statement, because we want the navar to appear on every page.
+This is a good example of something that would go in the application layout file in the `<body>` above our `<%= yield %>` statement, because we want the navbar to appear on every page.
 
 After this copy-paste, check on your live app that the navbar showed up.
 
-Now would be a good time for git commit.
-
 Let's start modifying the navbar to suit our purposes, starting with the homepage link:
 
-```erb
-...
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+```erb{4,6}
+<!-- ... -->
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
       <div class="container-fluid">
-        
         <!-- <a class="navbar-brand" href="#">Navbar</a> -->
+
         <a class="navbar-brand" href="/">Helper Methods 3</a>
-        
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-       ...
+
+       <!-- ... -->
 ```
-{: mark_lines="5-6"}
 
 Okay, we have a link to our `/` root page now. But actually, we should use our new helper methods! Remember, we have `link_to` now, which will draw `<a>` elements for us:
 
-```erb
-...
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+```erb{6,8}
+<!-- ... -->
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
       <div class="container-fluid">
-        
         <!-- <a class="navbar-brand" href="#">Navbar</a> -->
-        <a class="navbar-brand" href="/">Helper Methods 3</a>
-        <%= link_to "Helper Methods 3", root_path, class: "navbar-brand" %>
-        
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-...
-```
-{: mark_lines="5-7"}
 
-We added another argument to `link_to` besides the copy (first position), and the path (second position). We can also pass additional arguments as a hash on the end of the method, noting that we dropped the curly braces since this hash is the last argument to the method. And in that hash, we are just noting that the `class` of the link should be `"navbar-brand"`, as it was in the original `<a>` element.
+        <!-- <a class="navbar-brand" href="/">Helper Methods 3</a> -->
+
+        <%= link_to "Helper Methods 3", root_path, class: "navbar-brand" %>
+
+       <!-- ... -->
+```
+
+We added another argument to `link_to` besides the copy (first position), and the path (second position). We can also pass additional arguments as a hash on the end of the method, noting that we dropped the curly braces since this hash is the last argument to the method. And in that hash, we are just stating that the `class` of the link should be `"navbar-brand"`, as it was in the original `<a>` element.
 
 Confirm that the new `link_to` method works exactly as expected (and looks good with bootstrap). Then feel free to delete the old HTML element.
 
-What next? Just below the `"navbar-brand"` root link, there is code for the "hamburger" menu for smaller screens, so we don't want to modify that at all. But, a bit farther down is the actual nav links:
+Just below the `"navbar-brand"` root link, there is code for the "hamburger" menu for smaller screens (`<button class="navbar-toggler"...`). We don't want to modify that at all. But, a bit farther down are the actual nav links:
 
-```erb
-...
+```erb{5,8}
+<!-- ... -->
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
@@ -216,58 +134,46 @@ What next? Just below the `"navbar-brand"` root link, there is code for the "ham
           <li class="nav-item">
             <a class="nav-link" href="#">Link</a>
           </li>
-...
+<!-- ... -->
 ```
-{: mark_lines="3-6"}
 
-We have a list beginning with `<ul>`, then each `<li>` with a `class="nav-item"` followed by an `<a>` link of `class="nav-link"`. Well, we can replace those with `link_to`s and put in the paths we want links to:
+We have a list beginning with `<ul>`, then each `<li>` with a `class="nav-item"` followed by an `<a>` link of `class="nav-link"`. We can replace those with `link_to`s and put in the paths we want links to, e.g. from this:
 
 ```erb
-...
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <!-- <a class="nav-link active" aria-current="page" href="#">Home</a> -->
-            <%= link_to "Movies", movies_path, class: "nav-link" %>
-          </li>
-          <!-- <li class="nav-item">
-            <a class="nav-link" href="#">Link</a>
-          </li> -->
-...
+<a class="nav-link active" aria-current="page" href="#">Home</a>
 ```
-{: mark_lines="6-7"}
+
+to this:
+
+```erb
+<%= link_to "Movies", movies_path, class: "nav-link active" %>
+```
 
 We could add more links to things like `/movies/new`, but we'll just keep it simple for now. 
 
-Lastly, let's delete the the `<li>` defining the dropdown menu, so that our final navbar code in the `<body>` of `app/views/layouts/application.html.erb` looks like:
+Lastly, we can delete the entire `<li class="nav-item dropdown">` nested element that defines the dropdown menu, since we only have the single resource in this app.
 
-```erb
-...
-      <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid">
-          <%= link_to "Helper Methods 3", root_path, class: "navbar-brand" %>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-              <li class="nav-item">
-                <%= link_to "Movies", movies_path, class: "nav-link" %>
-              </li>
-            </ul>
-            <form class="d-flex">
-              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-              <button class="btn btn-outline-success" type="submit">Search</button>
-            </form>
-          </div>
-        </div>
-      </nav>
-...
+## Git command line interface
+
+Now's a good time for another git commit. However, rather than your familiar VSCode built in workflow, it's time to see how most developers interact with git in the real world: via the command line.
+
+Pause for a moment and spend just 5 to 10 minutes [glancing over the next lesson on the Git Command-Line Interface (CLI)](https://learn.firstdraft.com/lessons/196-git-cli). **Do not spend time worrying about everything, most importantly, just get a sense of how you can commit and push from the command line.** You will get much more practice with git at the command line soon; including branching and merging.
+
+Have you looked over the Git CLI reading? If you feel comfortable with it, follow along with how I made my commit in the video by opening a bash prompt and running the commands:
+
+```
+% git add -A
+% git commit -m "added bootstrap navbar"
+% git push
 ```
 
-Now's a good time for another git commit. 
+(Or, as I do with shortcuts in the video:
 
-**BENP: CLI `git` 00:15:30 to 00:19:30 using chapters. Maybe better to wait to show in a separate subsequent lesson**
+`% g acm "added bootstrap navbar"` 
+
+and then: 
+
+`% g p`.)
 
 ## Bootstrap Alerts 00:19:30 to 00:23:30
 
@@ -297,7 +203,7 @@ Let's add some more bootstrap. Right now, when we add a movie at `/movies/new` t
 ```
 {: mark_lines="10-12 14-16"}
 
-We can improve that simple green text with [Bootstrap alerts](https://getbootstrap.com/docs/5.1/components/alerts/). Again, we can just copy and paste the examples we want (perhaps the green "success" and red "danger" boxes):
+We can improve that simple green text with [Bootstrap alerts](https://getbootstrap.com/docs/5.3/components/alerts/). Again, we can just copy and paste the examples we want (perhaps the green "success" and red "danger" boxes):
 
 ```erb
 <!-- app/views/layouts/application.html.erb -->
@@ -359,7 +265,7 @@ Test out adding movies and also filling out forms correctly and incorrectly. Do 
 
 ## Bootstrap Containers for Padding 00:23:30 to 00:27:00
 
-Okay, what else? Wouldn't it be nice if everything in the app wasn't pushed all the way to the edges? We would like some padding around the content. This is the perfect use case for [Bootstrap `container` class](https://getbootstrap.com/docs/5.2/layout/containers/). 
+Okay, what else? Wouldn't it be nice if everything in the app wasn't pushed all the way to the edges? We would like some padding around the content. This is the perfect use case for [Bootstrap `container` class](https://getbootstrap.com/docs/5.3/layout/containers/). 
 
 And since we want padding on every page, why not put it in the application layout again!
 
@@ -853,7 +759,7 @@ And it will appear (and work) in both of our new and edit forms!
 
 ## Bootstrap Cards for Show Page 01:25:00 to 01:32:00
 
-To explore the next topic, let's try and make the `movies#show` page look better. We don't want a list of information with the plain `<dl>` "description list" construction, we want [Bootstrap cards](https://getbootstrap.com/docs/5.1/components/card/)! (And maybe even some [free Font Awesome icons](https://fontawesome.com/search?o=r&m=free).)
+To explore the next topic, let's try and make the `movies#show` page look better. We don't want a list of information with the plain `<dl>` "description list" construction, we want [Bootstrap cards](https://getbootstrap.com/docs/5.3/components/card/)! (And maybe even some [free Font Awesome icons](https://fontawesome.com/search?o=r&m=free).)
 
 Let's cut to the chase with the code we want on the `app/view/movies/show.html.erb` page and see how it looks. Open that file and replace the entire contents with this code:
 
@@ -961,7 +867,7 @@ To do this, we can wrap our entire card in a Bootstrap row and column, right? Be
 ```
 {: mark_lines="3-4 8-9"}
 
-The `md-4` refers to "medium" and the "4" means that we are taking one third of the page (with the page divided width-wise into 12 equal breakpoints). You can find information on this grid layout that we are creating in the [Bootstrap grid system documents](https://getbootstrap.com/docs/5.2/layout/grid/).
+The `md-4` refers to "medium" and the "4" means that we are taking one third of the page (with the page divided width-wise into 12 equal breakpoints). You can find information on this grid layout that we are creating in the [Bootstrap grid system documents](https://getbootstrap.com/docs/5.3/layout/grid/).
 
 If you check the movie details page, you will see the card has shrunk to a third of the page width, but it's all the way on the left side.
 
@@ -1355,9 +1261,9 @@ Most developers learn Rails with `scaffold` as a _starting_ point. However, thro
 
 ## User accounts with Devise 02:07:00 to 02:17:30
 
-Most professional Rails apps, and from now all of ours, will use the `devise` generator to build out sign-in/sign-out RCAVs. (We'll leave the beginner-oriented `draft:account` behind.)
+You have already used the devise gem to add user accounts in the _Bulletin Board 2_, and we will do so again in this project.
 
-The next lesson _User Authentication with Devise_ has a few more details about the Devise gem, but this section is all you need to finish this project.
+The next reading lesson, _User Authentication with Devise_, has a few more details about the Devise gem and will be a handy cheat sheet; but this section is all you need to finish this current project.
 
  1. Add `gem "devise"` to your `Gemfile` and `bundle install`.
 
