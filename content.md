@@ -1162,7 +1162,7 @@ The next reading lesson, _User Authentication with Devise_, has a few more detai
     - (GET) `edit_user_registration_path`: displays an edit profile form
     - even more for cancelling accounts, forgotten passwords, etc.
  
-To see the new code in action, restart the server with <kdb>ctrl</kbd>+<kdb>c</kbd> in the `bin/dev` terminal and restart the server. 
+To see the new code in action, restart the server with <kbd>ctrl</kbd>+<kbd>c</kbd> in the `bin/dev` terminal and restart the server. 
 
 Now visit `/users/sign_in`. The whole login RCAV is up and running without us doing anything! 
 
