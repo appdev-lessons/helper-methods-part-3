@@ -909,9 +909,7 @@ Start typing the name of the file — VSCode fuzzily matches what you type and u
 
 If you're still manually clicking files and folders in the sidebar, start trying to get used to navigating with Jump To File instead.
 
-Most of what we do as web developers is getting data from our CRUD database and then putting HTML around it for our users. Aren't partials just wonderful for that!
-
-## `ActiveRecord` Object Partials 01:40:00 to 01:45:00
+## `ActiveRecord` object partials
 
 In the real world, a lot of professional developers would have just named the partial for the movie card `_movie.html.erb`. In fact, it's so common that we can open a `rails console` and see a specific method for it:
 
@@ -923,7 +921,7 @@ pry(main)> m.to_partial_path
 
 The method `.to_partial_path` was inherited from the `ApplicationRecord` class. We could even overwrite this method to follow _our_ naming convention:
 
-```ruby
+```ruby{6-8}
 # app/models/movie.rb
 
 class Movie < ApplicationRecord
@@ -934,7 +932,6 @@ class Movie < ApplicationRecord
   end
 end
 ```
-{: mark_lines="6-8"}
 
 But, let's just keep things conventional and rename our `_movie_card.html.erb` file to the traditional `_movie.html.erb` name (without the `_card`, which is not convention).
 
@@ -978,7 +975,7 @@ You will see these `render` shortcuts for partials on some online resources, so 
 
 You can see all of the cool ways to use partials like we've done here in [the official Rails documentation](https://edgeapi.rubyonrails.org/classes/ActionView/PartialRenderer.html).
 
-## `before_action` 01:45:00 to 01:53:30
+## `before_action`
 
 Now that we're comfortable with partials and using Bootstrap to style our app, let's switch gears.
 
@@ -986,7 +983,7 @@ In my controller, if I had some method or logic that was happening in several ac
 
 For instance, say we had a random method `foo` that just printed something:
 
-```ruby
+```ruby{4-6}
 # app/controllers/movies_controller.rb
 
 class MoviesController < ApplicationController
@@ -997,16 +994,15 @@ class MoviesController < ApplicationController
   def new
     @new_movie = Movie.new
   end
-...
+# ...
 ```
-{: mark_lines="4-6"}
 
 And we wanted to have that method run in a few different actions (say `new` and `index`):
 
-```ruby
+```ruby{5,10}
 # app/controllers/movies_controller.rb
 
-...
+# ...
   def new
     self.foo
     @new_movie = Movie.new
@@ -1022,19 +1018,19 @@ And we wanted to have that method run in a few different actions (say `new` and 
       format.html
     end
   end
-...
+# ...
 ```
-{: mark_lines="5 10"}
 
 <aside markdown="1">
+
 Did we need the `self.` before `foo`? No! Rails will look for a `self.` defined method before crashing if we left it off.
 </aside>
 
-Now, we could create a new movie from our index page in our live app, and visit the server log in our terminal where `bin/dev` is running (`p` statements in the controller will be rendered in the server log). We should see the printed statement run for both the `new` and `index` action.
+Now, we could create a new movie from our index page in our live app, and visit the server log in our terminal where `bin/dev` is running (`p`rint statements in the controller will be rendered in the server log). We should see the printed statement run for both the `new` and `index` action.
 
 There's actually a method inherited into the `MoviesController` that we can use to run this `foo` action before specific actions in our controller:
 
-```ruby
+```ruby{4,11,16}
 # app/controllers/movies_controller.rb
 
 class MoviesController < ApplicationController
@@ -1059,13 +1055,10 @@ class MoviesController < ApplicationController
       format.html
     end
   end
-...
+# ...
 ```
-{: mark_lines="4 11 16"}
 
-The method `before_action` takes a first argumet with the method name (as a symbol: `:foo`) and the second argument we give it is `only:`, which means "only run the action before this list of actions", and the array of actions in the controller to run `foo` _before_ (here, we run our dummy code before `:new` and `:index`). We could also use `except:` in place of `only:`, to pass a list of actions that we _don't_ want to run the method before.
-
-We saw `before_action` in AD1! When we wanted to force a user to sign in to the app before they did anything else, we added: `before_action :force_user_sign_in` to the top of our `ApplicationController`, which is inherited by every other conroller (`MoviesController < ApplicationController`). Refresh your memory on that [here](https://chapters.firstdraft.com/chapters/888#current_user).
+The method `before_action` takes a first argument with the method name (as a symbol, so `:foo`) and the second argument we give it is `only:`, which means "only run the action before this list of actions", and the array of actions in the controller to run `foo` _before_ (here, we run our dummy code before `:new` and `:index`). We could also use `except:` in place of `only:`, to pass a list of actions that we _don't_ want to run the method before.
 
 That's nice. Now let's delete that `foo` code and see where we can use this in our controller file to DRY up code.
 
@@ -1073,10 +1066,10 @@ How about all of the places in actions where we are writing `@movie = Movie.find
 
 Let's first make a method for this (and put it under `private` since it's just a helper for the actions in our CRUD app):
 
-```ruby
+```ruby{10-12}
 # app/controllers/movies_controller.rb
 
-...
+# ...
   private
 
   def movie_params
@@ -1088,38 +1081,36 @@ Let's first make a method for this (and put it under `private` since it's just a
   end
 end
 ```
-{: mark_lines="10-12"}
 
 And now, we can call this action before the methods that require it (and delete the code line with `@movie = ...` from those actions):
 
-```ruby
+```ruby{4}
 # app/controllers/movies_controller.rb
 
 class MoviesController < ApplicationController
   before_action :set_movie, only: [:show, :edit, :update, :destroy]
-...
+# ...
 ```
-{: mark_lines="4"}
 
-With that, two of those actions will actually end up being completely empty now!
+With that, two of those actions will end up being completely empty now!
 
 ```ruby
 # app/controllers/movies_controller.rb
 
-...
+# ...
   def show
   end
-...
+# ...
   def edit
   end
-...
+# ...
 ```
 
 One could argue that this use of `before_action` makes our codebase more difficult to read, so it's not strictly necessary. But, again, it's something you will see a lot and you should get used to.
 
 You can read more about this [in the official Rails documentation](https://guides.rubyonrails.org/action_controller_overview.html#filters).
 
-## Directors Scaffold 01:53:30 to 02:07:00
+## Directors scaffold
 
 With all of this new knowledge we've gained, let's try something. Open terminal tab and generate a new scaffold for a `directors` resource:
 
@@ -1129,43 +1120,42 @@ rails g scaffold director name dob:date bio:text
 
 Carefully read through all of the code that was generated by this built in Rails action. Do you understand much more of it now? Hopefully yes! 
 
-One thing: `scaffold` generates a basic CSS stylesheet in `app/assets/stylesheets/scaffold.scss`, which interferes with any Bootstrap we added, so you can delete this file.
-
 Understanding _most_ of what `scaffold` does is the baseline minimum knowledge you should have as a developer for looking at online resources.
 
-Most developers learn Rails with `scaffold` as a _starting_ point. However, through AD1 and AD2, you know how to drop back to basics with no helper methods or partials or anything else fancy, and just write an RCAV from scratch. That's something many developers never really learn how do to. Remember, when things are going wrong, drop back to basics and Route, Controller, Action, View!
+Most developers learn Rails with `scaffold` as a _starting_ point. However, you know how to drop back to basics with no helper methods or partials or anything else fancy, and just write an RCAV from scratch. That's something many developers never really learn how do to. Remember, when things are going wrong, drop back to basics and Route, Controller, Action, View!
 
-## User accounts with Devise 02:07:00 to 02:17:30
+## User accounts with Devise
 
-You have already used the devise gem to add user accounts in the _Bulletin Board 2_, and we will do so again in this project.
+<div class="bg-red-100 py-1 px-5" markdown="1">
+
+This section is not contained in the walkthrough video, but you have already used the devise gem to add user accounts in the _Bulletin Board 2_, and we will do so again in this project. Revisit that project and the associated video if you are getting stuck.
+</div>
 
 The next reading lesson, _User Authentication with Devise_, has a few more details about the Devise gem and will be a handy cheat sheet; but this section is all you need to finish this current project.
 
- 1. Add `gem "devise"` to your `Gemfile` and `bundle install`.
+1. Add `gem "devise"` to your `Gemfile` and `bundle install`. (The gem should actually be there already! It doesn't hurt to have a look and verify though.)
 
- 1. Then run another command at the terminal to finish installing it: 
- 
-    ```bash
+1. Then run another command at the terminal to finish installing it: 
+
+    ```
     rails g devise:install
     ```
 
- 1. Now create a `users` resource with: 
- 
-    ```bash
+1. Now create a `users` resource with: 
+
+    ```
     rails g devise user first_name:string last_name:string
     ```
 
-  This is just like our previous resource generator, where we have the table name `user` and the name:datatype of the columns.
- 
- 1. Migrate the table to our database: 
-    
-    ```bash
+1. Migrate the table to our database: 
+  
+    ```
     rails db:migrate
     ```
  
- 1. Check out the `User` model (`app/models/user.rb`). You'll see that Devise automatically adds columns for email and password, among other things.
+1. Check out the `User` model (`app/models/user.rb`). You'll see that Devise automatically adds columns for email and password, among other things.
  
- 1. Devise provides the following route helper methods and corresponding RCAVs for free (all with the addition of `devise_for :users` in `config/routes.rb`):
+1. Devise provides the following route helper methods and corresponding RCAVs for free (all with the addition of `devise_for :users` in `config/routes.rb`):
     - (GET) `new_user_registration_path`: displays a sign up form
     - (GET) `new_user_session_path`: displays a sign in form
     - (DELETE) `destroy_user_session_path`: signs the user out
@@ -1176,7 +1166,7 @@ To see the new code in action, restart the server with <kdb>ctrl</kbd>+<kdb>c</k
 
 Now visit `/users/sign_in`. The whole login RCAV is up and running without us doing anything! 
 
-Try to signup for an account. You can just use `alice@example.com` and `password`, no need to use your actual email. When you signup, you should be redirected to the root homepage `/`.
+Try to sign up for an account. You can just use `alice@example.com` and `password`, no need to use your actual email. When you sign up, you should be redirected to the root homepage `/`.
 
 Let's add some links to our navbar in the `_navbar.html.erb` partial to reach the sign up, sign in, sign out pages. E.g.:
 
@@ -1185,29 +1175,34 @@ Let's add some links to our navbar in the `_navbar.html.erb` partial to reach th
     <li class="nav-item">
       <%= link_to "Movies", movies_path, class: "nav-link" %>
     </li>
+
     <li class="nav-item">
-      <%= link_to "Sign up", new_user_registration_path, class: "nav-link" %>
+      <%= link_to "Edit profile", edit_user_registration_path(current_user), class: "nav-link" %>
+    </li>
+    <li class="nav-item">
+      <%= link_to "Sign out", destroy_user_session_path, class: "nav-link", data: { turbo_method: :delete } %>
     </li>
     <li class="nav-item">
       <%= link_to "Log in", new_user_session_path, class: "nav-link" %>
     </li>
     <li class="nav-item">
-      <%= link_to "Sign out", destroy_user_session_path, class: "nav-link", data: { turbo_method: :delete } %>
+      <%= link_to "Sign up", new_user_registration_path, class: "nav-link" %>
     </li>
+
 <!-- ... -->
 ```
 
-(Note we needed a `data: { turbo_method: :delete }` for the sign out action, because this is a DELETE request in the route that Devise defines.)
+Note we needed a `data: { turbo_method: :delete }` for the sign out action, because this is a DELETE request in the route that Devise defines.
 
 Now: 
 
- 1. If someone is signed in, conditionally display sign out/edit profile links in the navbar. You can check if someone is signed in with the `user_signed_in?` method, which is defined by Devise and available in all view templates.
- 
- 1. For the edit profile link, make the content of the `<a>` tag the user's first name + last name. You can access the signed in user with the `current_user` helper method, which is defined by Devise and available in all actions and all view templates.
- 
- 1. Sign out. (If your sign-out link didn't work, you probably forgot to add `data: { turbo_method: :delete }` to it.)
- 
- 1. Force someone to be signed in by adding the `before_action :authenticate_user!` method to the `ApplicationController`. The `:authenticate_user!` method is defined by Devise.
+1. If someone is signed in, conditionally display sign out/edit profile links in the navbar. You can check if someone is signed in with the `user_signed_in?` method, which is defined by Devise and available in all view templates.
+
+1. For the edit profile link, make the content of the `<a>` tag the user's first name + last name. You can access the signed in user with the `current_user` helper method, which is defined by Devise and available in all actions and all view templates.
+
+1. Sign out. (If your sign-out link didn't work, you probably forgot to add `data: { turbo_method: :delete }` to it.)
+
+1. Force someone to be signed in by adding the `before_action :authenticate_user!` method to the `ApplicationController`. The `:authenticate_user!` method is defined by Devise.
 
 ## Solutions
 
