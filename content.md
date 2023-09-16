@@ -1,4 +1,4 @@
-# Helper Methods Part 3: Bootstrap, partials, and devise
+# Helper Methods Part 3: Bootstrap and partials
 
 ## Getting Started
 
