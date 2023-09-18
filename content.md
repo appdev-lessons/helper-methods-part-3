@@ -1150,7 +1150,7 @@ The next reading lesson, _User Authentication with Devise_, has a few more detai
 1. Migrate the table to our database: 
   
     ```
-    rails db:migrate
+    rake db:migrate
     ```
  
 1. Check out the `User` model (`app/models/user.rb`). You'll see that Devise automatically adds columns for email and password, among other things.
@@ -1202,7 +1202,15 @@ Now:
 
 1. Sign out. (If your sign-out link didn't work, you probably forgot to add `data: { turbo_method: :delete }` to it.)
 
-1. Force someone to be signed in by adding the `before_action :authenticate_user!` method to the `ApplicationController`. The `:authenticate_user!` method is defined by Devise.
+1. Force someone to be signed in by adding the `before_action :authenticate_user!` method to the `ApplicationController`. The `:authenticate_user!` method is defined by Devise:
+
+```ruby{4}
+# app/controllers/application_controller.rb
+
+class ApplicationController < ActionController::Base
+  before_action :authenticate_user!
+end
+```
 
 ## Solutions
 
