@@ -951,7 +951,7 @@ That's pretty crazy! The render method, given an `ActiveRecord` object, will fig
 
 With the conventional naming and shortcut, the `render` method will even do the entire `.each` looping for us in the index if you give it an `ActiveRecord:Relation` (list of movie records) on the `index` page, so we could change:
 
-```
+```erb
 <div class="row">
   <% @movies.each do |movie| %>
     <div class="col-md-3">
@@ -963,7 +963,7 @@ With the conventional naming and shortcut, the `render` method will even do the 
 
 to:
 
-```
+```erb
 <div class="row">
   <%= render @movies %>
 </div>
