@@ -268,7 +268,7 @@ When I'm actually writing code, to speed things up, I use the "Emmet" abbreviati
 
 We put the container around our alerts and our `yield` (where all the rest of each page goes), but under the navbar, so the navbar will still stretch across the top of the screen.
 
-If we test this, it looks pretty good. But there's not a lot of space between flash messages and the navbar. We can shift everything down a little by adding to the `class` attribute in the container and making it: `class="container mt-4"`. MT for margin top and "4" for the spacing. 
+If we test this, it looks pretty good. But there's not a lot of space between flash messages and the navbar. We can shift everything down a little by adding to the `class` attribute in the container and making it: `class="container mt-3"`. MT for margin top and "3" for the spacing. (Feel free to experiment with different spacing, although check `rake grade` for the expectation from our automated test.)
 
 Looks good? Great! Commit again.
 
@@ -497,7 +497,7 @@ Now our application layout file should look much, much cleaner:
 
     <%= render partial: "shared/navbar" %>
 
-    <div class="container mt-4">
+    <div class="container mt-3">
       <%= render partial: "shared/flash_messages" %>
       <%= yield %>
     </div>
@@ -747,7 +747,7 @@ and:
 
 What are the three `"row"`, `"col"`, and `"d-grid"` classes doing? It turns out, these are what we need to achieve two side-by-side buttons that take up the full width of their Bootstrap row! The syntax might look familiar to creating an HTML table with rows and columns.
 
-Let's edit the code to center the card in the middle of the screen, rather than stretching across the full width. (Minus the padding that we provided in the application layout with `<div class="container mt-4">`.)
+Let's edit the code to center the card in the middle of the screen, rather than stretching across the full width. (Minus the padding that we provided in the application layout with `<div class="container mt-3">`.)
 
 To do this, we can wrap our entire card in a Bootstrap row and column, right? Because we already have the `"container"` from the application layout that is wrapping every page in our app, and now we can put rows and columns inside of _that_. 
 
